@@ -151,12 +151,19 @@
                     body: JSON.stringify({ code })
                 });
                 const result = await response.json();
-                document.getElementById('result').innerHTML =
-                    `Score: ${(result.total_score * 100).toFixed(1)}%<br>` +
-                    `Visible Test Cases: ${result.visible_correct}/20<br>` +
-                    `Hidden Test Cases: ${result.hidden_correct}/20<br>` +
-                    `Time: ${result.execution_time.toFixed(3)}s`;
-                loadLeaderboard();
+
+                if (result.error) {
+                    // Handle error case
+                    document.getElementById('result').innerHTML = `Error: ${result.error}`;
+                } else {
+                    // Handle success case
+                    document.getElementById('result').innerHTML =
+                        `Score: ${(result.total_score * 100).toFixed(1)}%<br>` +
+                        `Visible Test Cases: ${result.visible_correct}/20<br>` +
+                        `Hidden Test Cases: ${result.hidden_correct}/20<br>` +
+                        `Time: ${result.execution_time.toFixed(3)}s`;
+                    loadLeaderboard();
+                }
             } catch (error) {
                 document.getElementById('result').innerHTML =
                     `Error: ${error.message}`;

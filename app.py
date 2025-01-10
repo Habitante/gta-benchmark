@@ -217,10 +217,25 @@ def get_puzzle(puzzle_id):
                            puzzle=puzzle,
                            prompt=prompt)
 
+
 @app.route('/api/submit/<puzzle_id>', methods=['POST'])
 def submit_solution(puzzle_id):
     puzzles = get_available_puzzles()
-    if puzzle_id not in puzzles:
+
+    # Parse puzzle_id to find it in the nested structure
+    source_dir = puzzle_id.split('_')[0]  # 'benchmark' or 'examples'
+    level_num = int(puzzle_id.split('_')[2])  # get number after 'level_'
+    puzzle_num = int(puzzle_id.split('_')[-1])  # get last number
+
+    # Look for the puzzle in the correct source/level
+    if source_dir not in puzzles or level_num not in puzzles[source_dir]:
+        return jsonify({'error': 'Puzzle not found'}), 404
+
+    # Find the specific puzzle in the level
+    level_puzzles = puzzles[source_dir][level_num]
+    puzzle = next((p for p in level_puzzles if p['id'] == puzzle_id), None)
+
+    if not puzzle:
         return jsonify({'error': 'Puzzle not found'}), 404
 
     data = request.get_json()
@@ -239,10 +254,10 @@ def submit_solution(puzzle_id):
                         (puzzle_id, user_name, total_score, visible_score, hidden_score,
                          execution_time, code_length, timestamp)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
-                     (puzzle_id, 'anonymous', result['total_score'],
-                      result['visible_score'], result['hidden_score'],
-                      result['execution_time'], len(data['code']),
-                      datetime.utcnow()))
+                      (puzzle_id, 'anonymous', result['total_score'],
+                       result['visible_score'], result['hidden_score'],
+                       result['execution_time'], len(data['code']),
+                       datetime.utcnow()))
             conn.commit()
 
     return jsonify(result)

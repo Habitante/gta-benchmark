@@ -169,7 +169,7 @@ if __name__ == "__main__":
                 # Parse puzzle ID components
                 puzzle_parts = puzzle_id.split('_')
                 source_dir = puzzle_parts[0]  # 'benchmark' or 'examples'
-                level_dir = f"{puzzle_parts[1]}/{puzzle_parts[2]}"  # already includes 'level_'
+                level_dir = f"{puzzle_parts[1]}_{puzzle_parts[2]}"  # already includes 'level_'
                 puzzle_num = puzzle_parts[-1]  # Get last part as puzzle number
 
                 buffers_path = os.path.join(self.project_root, "buffers", "shared")
@@ -184,44 +184,64 @@ if __name__ == "__main__":
                 print(f"DEBUG - Mounting puzzle dir from: {puzzle_dir}")
                 print(f"DEBUG - Looking for outputs with number: {puzzle_num}")
 
-                # Run the container
-                print("Starting container...")
-                result = self.client.containers.run(
+                # Create container with configuration
+                container = self.client.containers.create(
                     self.image_name,
                     ["python", "-u", "/workspace/runner.py"],
                     environment={
-                        "PUZZLE_NUM": puzzle_num  # Pass puzzle number to container
+                        "PUZZLE_NUM": puzzle_num
                     },
                     volumes={
                         str(tmp_path): {"bind": "/workspace", "mode": "ro"},
                         buffers_path: {"bind": "/buffers/shared", "mode": "ro"},
                         puzzle_dir: {"bind": "/puzzle", "mode": "ro"}
                     },
-                    mem_limit="256m",
+                    mem_limit="64m",
                     network_disabled=True,
-                    remove=True
+                    read_only=True,
+                    pids_limit=100
                 )
 
-                # Process the output
-                output = result.decode('utf-8').strip()
-                print("\nDEBUG - Container Output lines:")
-                print("-" * 50)
-                lines = output.split('\n')
-                for i, line in enumerate(lines):
-                    print(f"Line {i}: {repr(line)}")
-                print("-" * 50)
+                try:
+                    # Start container and wait for result
+                    container.start()
+                    result = container.wait(timeout=3)
 
-                # Look for the last JSON line as our result
-                for line in reversed(lines):
-                    line = line.strip()
+                    # Get container output
+                    output = container.logs().decode('utf-8').strip()
+                    print("\nDEBUG - Container Output lines:")
+                    print("-" * 50)
+                    lines = output.split('\n')
+                    for i, line in enumerate(lines):
+                        print(f"Line {i}: {repr(line)}")
+                    print("-" * 50)
+
+                    # Process exit code
+                    if result['StatusCode'] != 0:
+                        return {"error": "Solution failed with non-zero exit code"}
+
+                    # Look for the last JSON line as our result
+                    for line in reversed(lines):
+                        line = line.strip()
+                        try:
+                            result_dict = json.loads(line)
+                            print("DEBUG - Successfully parsed JSON:", result_dict)
+                            return result_dict
+                        except json.JSONDecodeError:
+                            continue
+
+                    return {"error": "No valid result found in output"}
+
+                except requests.exceptions.ReadTimeout:
+                    return {
+                        "error": "Execution timeout - solution took longer than 3 seconds"
+                    }
+                finally:
+                    # Always clean up container
                     try:
-                        result_dict = json.loads(line)
-                        print("DEBUG - Successfully parsed JSON:", result_dict)
-                        return result_dict
-                    except json.JSONDecodeError:
-                        continue
-
-                return {"error": "No valid result found"}
+                        container.remove(force=True)
+                    except Exception as e:
+                        print(f"Warning: Failed to remove container: {e}")
 
             except Exception as e:
                 print(f"Container error: {e}")
