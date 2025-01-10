@@ -151,3 +151,16 @@ systemctl status gta-benchmark
 - Monitor server resources and Docker container usage
 - Keep system and packages updated regularly
 - Consider setting up HTTPS with Let's Encrypt (coming soon)
+
+# Updating Levels
+
+1. Clean current benchmark folder
+rm -rf puzzles/benchmark/*
+
+2. Clone private repo using SSH URL and copy new levels
+git clone git@github.com:habitante/gta-benchmark-puzzles.git tmp
+cp -r tmp/puzzles/benchmark/* puzzles/benchmark/
+rm -rf tmp
+
+3. Restart the service:
+systemctl restart gta-benchmark
