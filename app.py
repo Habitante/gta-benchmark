@@ -3,10 +3,13 @@ from pathlib import Path
 from sandbox import DockerSandbox
 from flask import Flask, request, jsonify, render_template
 from datetime import datetime
+from dotenv import load_dotenv
 import docker
 import tempfile
 import sqlite3
 import os
+
+load_dotenv()  # Load environment variables from .env file
 
 app = Flask(__name__)
 
