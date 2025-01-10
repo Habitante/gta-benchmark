@@ -52,9 +52,9 @@ graph TD
         GitHub[GitHub Repository] -->|Hosts code for| Flask & Docker & Runner
     end
     
-    classDef interaction fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef backend fill:#bbf,stroke:#333,stroke-width:2px;
-    classDef source fill:#bfb,stroke:#333,stroke-width:2px;
+    classDef interaction fill:#727,stroke:#222,stroke-width:2px;
+    classDef backend fill:#229,stroke:#222,stroke-width:2px;
+    classDef source fill:#292,stroke:#222,stroke-width:2px;
     
     class User,WebUI interaction;
     class Flask,API,Docker,Runner,Results,Database,Leaderboard backend;
