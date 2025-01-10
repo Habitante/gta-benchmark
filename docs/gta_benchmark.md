@@ -85,7 +85,7 @@ This benchmark is not only for AI systems but also for human enthusiasts and dev
 ---
 
 ## Project Structure
-```python
+
 GTA-Benchmark/
 +-- app.py                   # Flask web server
 +-- sandbox.py              # Docker sandbox implementation
@@ -124,7 +124,6 @@ GTA-Benchmark/
 ¦   +-- puzzle.html       # Puzzle submission interface
 |
 +-- docs/                # Documentation
-```
 
 ---
 
@@ -277,6 +276,7 @@ The leaderboard tracks:
 ---
 
 ## **Sample Problem Prompt**
+
 """Below is a puzzle involving 20 input buffers and their transformed outputs.
 Each buffer is exactly 64 bytes, shown in hex.
 
