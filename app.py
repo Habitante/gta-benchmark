@@ -7,6 +7,8 @@ load_dotenv()  # Load environment variables from .env file
 from pathlib import Path
 from sandbox import DockerSandbox
 from flask import Flask, request, jsonify, render_template
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from datetime import datetime
 import docker
 import tempfile
@@ -15,6 +17,14 @@ import sqlite3
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET_KEY', 'default_secret_key')
+
+# After creating the Flask app
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri="memory://"
+)
 
 docker_sandbox = DockerSandbox()
 
@@ -225,6 +235,7 @@ def get_puzzle(puzzle_id):
 
 
 @app.route('/api/submit/<puzzle_id>', methods=['POST'])
+@limiter.limit("20 per minute")  # More strict limit for submissions
 def submit_solution(puzzle_id):
     puzzles = get_available_puzzles()
 
