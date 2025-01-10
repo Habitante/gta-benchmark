@@ -140,6 +140,12 @@
             border-radius: 20px;
         }
 
+        .links {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
         .github-link {
             display: inline-block;
             padding: 10px 20px;
@@ -154,6 +160,15 @@
         .github-link:hover {
             background: #1b1f23;
         }
+
+        .github-link.feedback {
+            background: #2ea043;
+        }
+
+        .github-link.feedback:hover {
+            background: #238636;
+        }
+
     </style>
 </head>
 <body>
@@ -171,11 +186,17 @@
                 <li>Real-time scoring and leaderboards</li>
             </ul>
         </div>
-        <div class="links">
-            <a href="https://github.com/habitante/gta-benchmark" class="github-link" target="_blank">
-                View on GitHub
-            </a>
-        </div>
+            <div class="links">
+                <a href="https://github.com/habitante/gta-benchmark" class="github-link" target="_blank">
+                    View on GitHub
+                </a>
+                <a href="https://github.com/habitante/gta-benchmark/discussions" class="github-link" target="_blank">
+                    Join Discussion
+                </a>
+                <a href="https://github.com/habitante/gta-benchmark/issues" class="github-link feedback" target="_blank">
+                    Report Issue
+                </a>
+            </div>
     </div>
 
     {% if puzzles.benchmark %}
