@@ -31,29 +31,34 @@ A running instance of GTA-Benchmark is available at http://138.197.66.242:5000/
 ## Architecture
 ```mermaid
 graph TD
-    User[User]
-    WebUI[Web Interface]
-    Flask[Flask App]
-    API[API Endpoint]
-    Docker[Docker Sandbox]
-    Runner[Code Runner]
-    Results[Results]
-    Database[SQLite Database]
-    GitHub[GitHub Repository]
-    Leaderboard[Leaderboard]
+    subgraph User Interaction
+        User[User] -->|Interacts with| WebUI[Web Interface]
+    end
     
-    User -->|Interacts with| WebUI
-    WebUI -->|Sends code to| Flask
-    Flask -->|Processes request via| API
-    API -->|Invokes| Docker
-    Docker -->|Runs| Runner
-    Runner -->|Generates| Results
-    Results -->|Stores results in| Database
-    Database -->|Updates| Leaderboard
-    Results -->|Returns to| Flask
-    Flask -->|Displays to| WebUI
-    WebUI -->|Fetches leaderboard from| Leaderboard
-    GitHub -->|Hosts code for| Flask & Docker & Runner
+    subgraph Backend
+        WebUI -->|Sends code to| Flask[Flask App]
+        Flask -->|Processes request via| API[API Endpoint]
+        API -->|Invokes| Docker[Docker Sandbox]
+        Docker -->|Runs| Runner[Code Runner]
+        Runner -->|Generates| Results[Results]
+        Results -->|Stores results in| Database[SQLite Database]
+        Database -->|Updates| Leaderboard[Leaderboard]
+        Results -->|Returns to| Flask
+        Flask -->|Displays to| WebUI
+        WebUI -->|Fetches leaderboard from| Leaderboard
+    end
+    
+    subgraph Source Control
+        GitHub[GitHub Repository] -->|Hosts code for| Flask & Docker & Runner
+    end
+    
+    classDef interaction fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef backend fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef source fill:#bfb,stroke:#333,stroke-width:2px;
+    
+    class User,WebUI interaction;
+    class Flask,API,Docker,Runner,Results,Database,Leaderboard backend;
+    class GitHub source;
 ```
 
 ## Local Development
