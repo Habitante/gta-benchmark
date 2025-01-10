@@ -1,0 +1,164 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GTA Benchmark</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background: #f5f5f7;
+            color: #1d1d1f;
+        }
+        h1 {
+            text-align: center;
+            color: #1d1d1f;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+        }
+        .level-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+        .level-info {
+            flex: 2;
+        }
+        .level-info h2 {
+            margin: 0 0 10px 0;
+            color: #2b2b2b;
+        }
+        .level-description {
+            color: #4b4b4b;
+            font-size: 1.1em;
+            margin: 0;
+        }
+        .characteristics-card {
+            flex: 1;
+            background: #f8f8fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .characteristics-title {
+            color: #666;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+        }
+        .characteristics-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .characteristics-list li {
+            margin-bottom: 5px;
+        }
+        .characteristics-list li strong {
+            color: #4b4b4b;
+        }
+        .puzzle-links {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .puzzle-link {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #007aff;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: background 0.2s;
+        }
+        .puzzle-link:hover {
+            background: #0055b3;
+        }
+        @media (max-width: 768px) {
+            .level-header {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .characteristics-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<h1>GTA (Guess The Algorythm) Model Benchmark</h1>
+
+    {% if puzzles.benchmark %}
+        {# Show benchmark puzzles if available #}
+        {% for level, level_puzzles in puzzles.benchmark|dictsort %}
+        <div class="level-card">
+            <div class="level-header">
+                <div class="level-info">
+                    <h2>Level {{level}}: {{level_puzzles[0].metadata.name}}</h2>
+                    <p class="level-description">{{level_puzzles[0].metadata.description}}</p>
+                </div>
+
+                <div class="characteristics-card">
+                    <h3 class="characteristics-title">Level Characteristics</h3>
+                    <ul class="characteristics-list">
+                        {% for key, value in level_puzzles[0].metadata.complexity.items() %}
+                        <li><strong>{{key|title}}:</strong> {{value}}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="puzzle-links">
+                {% for puzzle in level_puzzles %}
+                <a href="/puzzle/{{puzzle.id}}" class="puzzle-link">Puzzle {{puzzle.number}}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% elif puzzles.examples %}
+        {# Fall back to examples if no benchmark puzzles #}
+        {% for level, level_puzzles in puzzles.examples|dictsort %}
+        <div class="level-card">
+            <div class="level-header">
+                <div class="level-info">
+                    <h2>Level {{level}}: {{level_puzzles[0].metadata.name}}</h2>
+                    <p class="level-description">{{level_puzzles[0].metadata.description}}</p>
+                </div>
+
+                <div class="characteristics-card">
+                    <h3 class="characteristics-title">Level Characteristics</h3>
+                    <ul class="characteristics-list">
+                        {% for key, value in level_puzzles[0].metadata.complexity.items() %}
+                        <li><strong>{{key|title}}:</strong> {{value}}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="puzzle-links">
+                {% for puzzle in level_puzzles %}
+                <a href="/puzzle/{{puzzle.id}}" class="puzzle-link">Puzzle {{puzzle.number}}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>

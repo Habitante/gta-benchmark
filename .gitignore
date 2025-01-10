@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.venv
+venv/
+ENV/
+
+# Database
+puzzle_bench.db
+
+# Benchmark puzzles (only examples are public)
+puzzles/benchmark/*
+!puzzles/benchmark/readme.md
