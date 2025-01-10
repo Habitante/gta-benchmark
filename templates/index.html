@@ -100,10 +100,83 @@
                 width: 100%;
             }
         }
+        .header-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .header-card h1 {
+            margin-bottom: 20px;
+        }
+
+        .header-card .description {
+            color: #4b4b4b;
+            font-size: 1.1em;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+
+        .header-card .features {
+            margin: 20px 0;
+        }
+
+        .header-card .features ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-card .features li {
+            color: #666;
+            background: #f8f8fa;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        .github-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #24292e;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .github-link:hover {
+            background: #1b1f23;
+        }
     </style>
 </head>
 <body>
-<h1>GTA (Guess The Algorythm) Model Benchmark</h1>
+    <div class="header-card">
+        <h1>GTA (Guess The Algorithm) Model Benchmark</h1>
+        <p class="description">
+            Test your AI model's algorithmic reasoning capabilities through reverse-engineering of byte transformations.
+            Each puzzle provides 20 visible test cases for analysis and 20 hidden test cases for validation.
+        </p>
+        <div class="features">
+            <ul>
+                <li>All buffers are exactly 64 bytes</li>
+                <li>Solutions run in secure Docker sandbox</li>
+                <li>Progressive difficulty levels</li>
+                <li>Real-time scoring and leaderboards</li>
+            </ul>
+        </div>
+        <div class="links">
+            <a href="https://github.com/habitante/gta-benchmark" class="github-link" target="_blank">
+                View on GitHub
+            </a>
+        </div>
+    </div>
 
     {% if puzzles.benchmark %}
         {# Show benchmark puzzles if available #}
