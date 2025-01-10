@@ -292,6 +292,15 @@ def get_leaderboard(puzzle_id):
 
     return jsonify(leaderboard)
 
+@app.route('/debug_env')
+def debug_env():
+    return jsonify({
+        'FLASK_ENV': os.getenv('FLASK_ENV'),
+        'FLASK_SECRET_KEY': os.getenv('FLASK_SECRET_KEY'),
+        'DATABASE_URL': os.getenv('DATABASE_URL')
+    })
+
+
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
