@@ -1,4 +1,5 @@
 # app.py
+import os
 from dotenv import load_dotenv
 
 load_dotenv()  # Load environment variables from .env file
@@ -10,7 +11,6 @@ from datetime import datetime
 import docker
 import tempfile
 import sqlite3
-import os
 
 
 app = Flask(__name__)
