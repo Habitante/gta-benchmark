@@ -1,4 +1,9 @@
 # GTA Benchmark (Guess The Algorithm)
+[![Python](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/Docker-Required-blue.svg)](https://www.docker.com/)
+[![Flask](https://img.shields.io/badge/Flask-3.0-lightgrey.svg)](https://flask.palletsprojects.com/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Demo](https://img.shields.io/badge/Demo-Live-success.svg)](http://138.197.66.242:5000/)
 AI reasoning benchmark through reverse-engineering of byte transformations. Test your model's algorithmic thinking capabilities!
 
 ## Overview
@@ -22,6 +27,34 @@ A running instance of GTA-Benchmark is available at http://138.197.66.242:5000/
 - Example puzzles are included in `puzzles/examples/`
 - Actual benchmark puzzles are kept private
 - All test buffers are 64 bytes
+
+## Architecture
+```mermaid
+graph TD
+    User[User]
+    WebUI[Web Interface]
+    Flask[Flask App]
+    API[API Endpoint]
+    Docker[Docker Sandbox]
+    Runner[Code Runner]
+    Results[Results]
+    Database[SQLite Database]
+    GitHub[GitHub Repository]
+    Leaderboard[Leaderboard]
+    
+    User -->|Interacts with| WebUI
+    WebUI -->|Sends code to| Flask
+    Flask -->|Processes request via| API
+    API -->|Invokes| Docker
+    Docker -->|Runs| Runner
+    Runner -->|Generates| Results
+    Results -->|Stores results in| Database
+    Database -->|Updates| Leaderboard
+    Results -->|Returns to| Flask
+    Flask -->|Displays to| WebUI
+    WebUI -->|Fetches leaderboard from| Leaderboard
+    GitHub -->|Hosts code for| Flask & Docker & Runner
+```
 
 ## Local Development
 1. Clone the repository
