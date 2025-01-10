@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
 """
-doc.py
+generate_project_md.py
 -------
 A script to document your Python project by creating a markdown file
 with the project structure and all source code included. It also handles
 binary files by converting them to hexadecimal representation.
 
 Usage:
-    python doc.py
+    python generate_project_md.py
 """
 
 import os
 
 # You can adjust these lists as needed to exclude or include certain files/folders.
 EXCLUDED_DIRS = {'.git', '.idea', '__pycache__', 'venv', '.venv'}
-EXCLUDED_FILES = {'doc.py', 'project.md'}
+EXCLUDED_FILES = {'generate_project_md.py'}
 # Extensions considered as binary files
-EXCLUDED_EXTENSIONS = {'.bin', '.txt'}
+EXCLUDED_EXTENSIONS = {'.bin', '.txt', '.md'}
 BINARY_EXTENSIONS = {'.bin'}
 
 def get_directory_structure(root_dir):
@@ -179,7 +179,7 @@ def main():
             md_content.append("\n```\n\n")
 
     # 3. Write the project.md file
-    with open(os.path.join(root_dir, "project.md"), "w", encoding="utf-8") as f:
+    with open(os.path.join(root_dir, "docs/project.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(md_content))
 
 if __name__ == "__main__":

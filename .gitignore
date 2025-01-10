@@ -10,6 +10,9 @@ ENV/
 # Database
 puzzle_bench.db
 
+# Project markdown auto-doc
+project.md
+
 # Benchmark puzzles (only examples are public)
 puzzles/benchmark/*
 !puzzles/benchmark/readme.md
