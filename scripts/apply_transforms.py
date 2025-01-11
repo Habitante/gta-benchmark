@@ -25,7 +25,7 @@ def load_all_buffers(shared_directory='../buffers/shared'):
 
     # Load visible buffers
     seen_bytes = set()
-    for i in range(1, 21):
+    for i in range(1, 25):
         filepath = os.path.join(shared_directory, f'visible_{i:02d}.bin')
         with open(filepath, 'rb') as f:
             buf = f.read()
@@ -34,19 +34,22 @@ def load_all_buffers(shared_directory='../buffers/shared'):
 
     missing_bytes = set(range(256)) - seen_bytes
 
-    print(f"Total unique bytes in visible inputs: {len(seen_bytes)}")
-    print(f"Number of missing bytes in visible inputs: {len(missing_bytes)}")
-    print("Missing byte values on input buffers: ")
-    print([f"0x{x:02X}" for x in sorted(list(missing_bytes))])
-
-    # Load hidden buffers
-    for i in range(1, 21):
+    # Load hidden buffers and check which ones contain missing bytes
+    hidden_with_missing = 0
+    for i in range(1, 25):  # Changed to 24 buffers
         filepath = os.path.join(shared_directory, f'hidden_{i:02d}.bin')
         with open(filepath, 'rb') as f:
-            hidden_buffers.append(f.read())
+            buf = f.read()
+            hidden_buffers.append(buf)
+            # Check if this buffer has any of the missing bytes
+            if any(byte in missing_bytes for byte in buf):
+                hidden_with_missing += 1
+            else:
+                print(f"\nHidden buffer #{i} contains no missing bytes!")
+
+    print(f"\nNumber of hidden buffers containing missing bytes: {hidden_with_missing} out of 24")
 
     return visible_buffers, hidden_buffers
-
 
 def load_prompt_header(shared_directory='../buffers/shared'):
     """
@@ -67,7 +70,19 @@ def generate_complete_prompt(visible_outputs):
         hex_str = output.hex()
         prompt += f"OUTPUT #{i:02d}: {hex_str}\n"
 
-    prompt += "\nGood luck! Remember, the transformation is the same for all 20 buffers."
+    prompt += """
+Instructions:
+- Return just your best possible approximation as a small python function that takes a 64 byte array as input, and returns the 64 byte array as output. 
+- Remember, the transformation is the same for all 24 buffers.
+- The function will be scored by the number of buffers that are correctly transformed (as shown in the 24 outputs).
+- And it also will be tested on another set of 24 hidden input buffers not shown in the prompt. 
+- Do not include anything else in your response, no introduction text or explanations.
+
+Example Output:
+def transform(data: bytes) -> bytes:
+   # Transform logic
+   return bytes"""
+
     return prompt
 
 
@@ -127,5 +142,53 @@ def apply_and_save_transforms(root_dir='../puzzles'):
                 except Exception as e:
                     print(f"Error applying transform for {transform_file}: {e}")
 
+
+def output_transformed_buffers(root_dir='../puzzles'):
+    """
+    Generate a single document with all transforms outputs.
+    """
+    visible_buffers, hidden_buffers = load_all_buffers()
+    all_outputs = []
+
+    # Walk through all subdirectories in sorted order
+    for root, dirs, files in sorted(os.walk(root_dir)):
+        # Look for transform_*.py files
+        for file in sorted(files):
+            if file.startswith('transform_') and file.endswith('.py'):
+                transform_file = os.path.join(root, file)
+
+                # Extract level and puzzle numbers from path
+                parts = transform_file.split(os.sep)
+                if len(parts) >= 3:
+                    level_dir = parts[-2]  # e.g. 'level_1'
+                    puzzle_num = file.split('_')[1].split('.')[0]  # Extract number from transform_N.py
+
+                    try:
+                        # Load the transform function
+                        transform = load_transform(transform_file)
+
+                        # Apply transform to visible buffers
+                        outputs = []
+                        for buf in visible_buffers:
+                            output = transform(buf)
+                            outputs.append(output.hex())
+
+                        # Format the output
+                        header = f"\nLevel {level_dir[-1]}-{puzzle_num}\n"
+                        out_lines = [f"OUTPUT #{i + 1:02d}: {out}" for i, out in enumerate(outputs)]
+
+                        all_outputs.append(header + "\n".join(out_lines))
+
+                        print(f"Processed transform for {level_dir}-{puzzle_num}")
+
+                    except Exception as e:
+                        print(f"Error applying transform for {transform_file}: {e}")
+
+    # Save combined output
+    with open('all_transforms_output.txt', 'w') as f:
+        f.write("\n".join(all_outputs))
+    print("Generated combined output file: all_transforms_output.txt")
+
 if __name__ == "__main__":
+    #output_transformed_buffers()
     apply_and_save_transforms()

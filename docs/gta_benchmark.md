@@ -85,7 +85,7 @@ This benchmark is not only for AI systems but also for human enthusiasts and dev
 ---
 
 ## Project Structure
-
+```
 GTA-Benchmark/
 +-- app.py                   # Flask web server
 +-- sandbox.py              # Docker sandbox implementation
@@ -124,6 +124,7 @@ GTA-Benchmark/
 ¦   +-- puzzle.html       # Puzzle submission interface
 |
 +-- docs/                # Documentation
+```
 
 ---
 
@@ -277,15 +278,12 @@ The leaderboard tracks:
 
 ## **Sample Problem Prompt**
 
-"""Below is a puzzle involving 20 input buffers and their transformed outputs.
+```
+Below is a puzzle involving 20 input buffers and their transformed outputs.
 Each buffer is exactly 64 bytes, shown in hex.
 
 Your task: Figure out the logic of the transformation used to go from the INPUT to the OUTPUT.
 Then, provide a Python function that, given any new 64-byte buffer, will produce the correct transformed output.
-
-def transform(data: bytes) -> bytes:
-   # Transform logic
-   return bytes
 
 Here are the 20 input (SRC) buffers in hex (one line per buffer):
 INPUT #01: 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
@@ -331,7 +329,18 @@ OUTPUT #18: 47676767672727576777676727274767676767272757677767672727476767676727
 OUTPUT #19: 070707070707071727375797e77767d737175767c727f72717374777b727d707e7e7c7b77727a7c76737a7d78757e747276787e76747a7f7a79737d707d7e7b7
 OUTPUT #20: 779737c7f747272707c7971777b7875737876707878767579797b727a7c7775777f787279707979767d7d797d7e757779787172717e787f7a7476727d767e787
 
-Good luck! Remember, the transformation is the same for all 20 buffers."""
+Instructions:
+- Return just your best possible approximation as a small python function that takes a 64 byte array as input, and returns the 64 byte array as output. 
+- Remember, the transformation is the same for all 20 buffers.
+- The function will be scored by the number of buffers that are correctly transformed (as shown in the 20 outputs).
+- And it also will be tested on another set of 20 hidden input buffers not shown in the prompt. 
+- Do not include anything else in your response, no introduction text or explanations.
+
+Example Output:
+def transform(data: bytes) -> bytes:
+   # Transform logic
+   return bytes
+```
 
 ---
 
@@ -357,6 +366,63 @@ Good luck! Remember, the transformation is the same for all 20 buffers."""
    - Hint system for difficult puzzles
    - Community solutions sharing
    
+---
+
+## **GitHub Issues Intro: Welcome to GTA-Benchmark: Known Issues & Roadmap**
+
+Welcome to GTA-Benchmark's issue tracker! 👋
+
+This is a pinned issue to track known limitations and planned improvements:
+
+### Current Limitations
+- Basic leaderboard with anonymous submissions
+- No user authentication system
+- HTTP only (no HTTPS yet)
+
+### Planned Improvements
+- [ ] Add user identification for submissions
+- [ ] Set up HTTPS
+- [ ] Implement global leaderboard
+- [ ] Add more monitoring and security features
+- [ ] Dynamic puzzle levels that keep the complexity, but change daily
+
+Feel free to:
+- Comment on these items
+- Create new issues for bugs you find
+- Suggest new features
+- Check our [Discussions](link) for general topics
+
+For general questions and community interaction, please use the Discussions tab instead of Issues.
+
+---
+
+## **GitHub Discussions Intro**
+
+## 👋 Welcome to GTA-Benchmark Discussions!
+
+We're using Discussions as a central place to:
+* Ask questions about puzzles and implementation details
+* Share your solutions and strategies (without spoilers!)
+* Suggest improvements and new puzzle ideas
+* Report bugs or technical issues
+* Connect with other AI/ML enthusiasts
+
+### Guidelines:
+* Avoid sharing complete solutions to puzzles
+* Be respectful and constructive in your feedback
+* Tag your discussions appropriately (Q&A, Ideas, Show & Tell)
+* Include relevant details when reporting issues
+
+### Getting Started
+* Check out our example puzzles
+* Try submitting your first solution
+* Share your experience or ask questions
+* Read our [README](link-to-readme) for detailed information
+
+The benchmark is in active development, and we welcome your feedback to make it better!
+
+Feel free to start a new discussion or join existing ones. Happy solving! 🧩
+
 ---
 
 ## **Conclusion**

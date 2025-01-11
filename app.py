@@ -67,52 +67,52 @@ PUZZLE_METADATA = {
     },
     3: {
         'name': 'Intro to Multi-Byte',
-        'description': 'Tiny steps beyond single-byte. Minimal feed-forward and position use.',
+        'description': 'Position-based operations and simple dependencies',
         'complexity': {
             'window': '1-2 bytes or position i',
             'operations': '1-3 ops per byte',
-            'state': 'minor feed-forward references',
-            'features': 'simple partial sums, small branching, bit rotations'
+            'state': 'position-based, simple branching',
+            'features': 'position indexing, even/odd logic, previous byte reference'
         }
     },
     4: {
-        'name': 'Slightly More Complex Multi-Byte',
-        'description': 'Two-pass logic, small state machines, mild 2D transforms.',
+        'name': 'Basic Multi-Pass',
+        'description': 'Two-pass transforms and 2D indexing without state',
         'complexity': {
-            'window': '1-2+ bytes or 2D indexing',
+            'window': '1-2 bytes or 2D indexing',
             'operations': '2-5 ops per byte',
-            'state': 'running or 2D-based manipulations',
-            'features': 'multi-pass, block-based logic (light)',
+            'state': 'none',
+            'features': 'multi-pass, 2D transforms, position-based blocks'
         }
     },
     5: {
-        'name': 'More Advanced Single/Block Mix',
-        'description': 'Branching toggles, mild checksums, basic block manipulations.',
+        'name': 'State Introduction',
+        'description': 'Running state and block-based operations',
         'complexity': {
-            'window': 'blocks or entire buffer as state',
-            'operations': '2-6 ops per byte, multi-step transforms',
-            'state': 'toggle/conditional, partial reordering, or checksums',
-            'features': 'toy ciphers, multi-round transformations (still light)'
+            'window': '1+ bytes with state',
+            'operations': '2-5 ops per byte',
+            'state': 'running state, toggles',
+            'features': 'state tracking, block operations'
         }
     },
     6: {
-        'name': 'Multi-Pass & Block: Intermediate',
-        'description': 'Increasing interplay: 2-pass combos, toggles with position, 2-output references.',
+        'name': 'Complex Multi-Pass',
+        'description': 'Advanced passes with blocks and feedback',
         'complexity': {
-            'window': 'multiple bytes, partial blocks, 2D references',
-            'operations': '3-6 ops per byte, up to 2-3 passes',
-            'state': 'small feedback loops or toggles, partial block swaps',
-            'features': 'multi-pass feed-forward/back, row-col bit shifts'
+            'window': 'multiple bytes, blocks',
+            'operations': '3-6 ops per byte',
+            'state': 'block-based feedback, toggles',
+            'features': 'multi-pass with feedback, block transforms'
         }
     },
     7: {
-        'name': 'Combined Techniques',
-        'description': 'Multiple short passes, mild block reorders, data-based toggles/checksums.',
+        'name': 'Advanced Combinations',
+        'description': 'Checksums, multi-pass feedback, and block operations',
         'complexity': {
-            'window': 'several blocks or entire buffer, partial local sums',
-            'operations': '4-7 ops per byte, typically 2-3 passes',
-            'state': 'mini checksums, partial block indexing, forward/backward feedback',
-            'features': 'multi-round transforms, toggles, sum-based logic'
+            'window': 'full buffer or blocks',
+            'operations': '4-7 ops per byte',
+            'state': 'checksums, block feedback',
+            'features': 'checksum-based transforms, complex multi-pass, block shuffling'
         }
     }
 }

@@ -159,8 +159,8 @@
                     // Handle success case
                     document.getElementById('result').innerHTML =
                         `Score: ${(result.total_score * 100).toFixed(1)}%<br>` +
-                        `Visible Test Cases: ${result.visible_correct}/20<br>` +
-                        `Hidden Test Cases: ${result.hidden_correct}/20<br>` +
+                        `Visible Test Cases: ${result.visible_correct}/24<br>` +
+                        `Hidden Test Cases: ${result.hidden_correct}/24<br>` +
                         `Time: ${result.execution_time.toFixed(3)}s`;
                     loadLeaderboard();
                 }

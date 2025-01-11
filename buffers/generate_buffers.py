@@ -5,7 +5,7 @@ import random
 
 def generate_visible_buffers():
     """
-    Generate 20 visible test buffers of 64 bytes each, carefully structured
+    Generate 24 visible test buffers of 64 bytes each, carefully structured
     to help understand transformations.
     """
     buffers = []
@@ -47,30 +47,69 @@ def generate_visible_buffers():
         pow2_chunks[i*8:(i+1)*8] = [chunk_val] * 8
     buffers.append(bytes(pow2_chunks))
 
-    # 18) ASCII text repeated
+    # Powers of 2 and offset variants (8 bytes chunks, 8 chunks = 64 bytes)
+    pattern_test = bytearray(64)
+    for i in range(8):  # 8 chunks
+        base = 1 << (i % 4)  # 1, 2, 4, 8 repeating pattern
+        # Fill first half of chunk with base value
+        chunk_start = i * 8
+        chunk_mid = chunk_start + 4
+        chunk_end = chunk_start + 8
+        pattern_test[chunk_start:chunk_mid] = [base] * 4
+        # Fill second half with base+1
+        pattern_test[chunk_mid:chunk_end] = [base + 1] * 4
+    buffers.append(bytes(pattern_test))
+
+    # 19) Rolling single bit + complement
+    bit_patterns = bytearray(64)
+    for i in range(64):
+        if i < 32:
+            bit_patterns[i] = 1 << (i % 8)  # Single bit set
+        else:
+            bit_patterns[i] = (1 << (i % 8)) ^ 0xFF  # Single bit clear
+    buffers.append(bytes(bit_patterns))
+
+    # 20) ASCII text repeated
     text = "Hello, World! "
     buffers.append((text * 5)[:64].encode('ascii'))
 
-    # 19) Fibonacci sequence mod 256
+    # 21) ASCII text repeated
+    text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do "
+    buffers.append((text * 5)[:64].encode('ascii'))
+
+    # 22) Fibonacci sequence mod 256
     fib = bytearray(64)
     fib[0], fib[1] = 1, 1
     for i in range(2, 64):
         fib[i] = (fib[i-1] + fib[i-2]) % 256
     buffers.append(bytes(fib))
 
-    # 20) Random but reproducible
+    # 23) Random but reproducible
     random.seed(4)  # Fixed seed for reproducibility
+    buffers.append(bytes([random.randint(0, 255) for _ in range(64)]))
+
+    # 24) Random but reproducible
+    random.seed(0)  # Fixed seed for reproducibility
     buffers.append(bytes([random.randint(0, 255) for _ in range(64)]))
 
     return buffers
 
-
-def generate_hidden_buffers():
+def get_missing_bytes(visible_buffers):
     """
-    Generate 20 hidden validation buffers, progressively more complex.
+    Calculate missing byte values from visible buffers.
+    """
+    seen_bytes = set()
+    for buf in visible_buffers:
+        seen_bytes.update(buf)
+    return set(range(256)) - seen_bytes
+
+def generate_hidden_buffers(missing_bytes):
+    """
+    Generate 24 hidden validation buffers, ensuring each contains missing bytes.
     """
     random.seed(1337)  # Different seed for hidden buffers
     buffers = []
+    missing_bytes_list = list(missing_bytes)  # Convert set to list for random.choice
 
     # 1-4) More complex patterns
     buffers.append(bytes([x ^ (x >> 4) for x in range(64)]))  # XOR pattern
@@ -82,16 +121,21 @@ def generate_hidden_buffers():
     for _ in range(4):
         buf = bytearray(64)
         pattern_length = random.randint(2, 8)
-        pattern = [random.randint(0, 255) for _ in range(pattern_length)]
+        # Ensure at least one missing byte in each pattern
+        pattern = [random.choice(list(missing_bytes))] + [random.randint(0, 255) for _ in range(pattern_length - 1)]
         for i in range(64):
             buf[i] = pattern[i % pattern_length]
         buffers.append(bytes(buf))
 
-    # 9-12) Structured random
+    # 9-12) Structured random with guaranteed missing bytes
     for _ in range(4):
         buf = bytearray(64)
+        missing_byte = random.choice(list(missing_bytes))
         for i in range(64):
-            buf[i] = (i * random.randint(1, 7) + random.randint(0, 255)) % 256
+            if i % 8 == 0:  # Insert missing byte every 8 positions
+                buf[i] = missing_byte
+            else:
+                buf[i] = (i * random.randint(1, 7) + random.randint(0, 255)) % 256
         buffers.append(bytes(buf))
 
     # 13-16) More text patterns with different encodings
@@ -100,13 +144,32 @@ def generate_hidden_buffers():
         buf = bytearray(64)
         encoded = text.encode('utf-8')
         buf[:len(encoded)] = encoded
+        # Fill rest with some missing bytes
         for i in range(len(encoded), 64):
-            buf[i] = random.randint(0, 255)
+            if i % 8 == 0:
+                buf[i] = random.choice(list(missing_bytes))
+            else:
+                buf[i] = random.randint(0, 255)
         buffers.append(bytes(buf))
 
-    # 17-20) Pure random buffers
-    for _ in range(4):
-        buffers.append(bytes([random.randint(0, 255) for _ in range(64)]))
+    # 17-24) Pure random buffers with guaranteed missing bytes
+    for _ in range(8):  # Increased to 8 buffers
+        buf = bytearray(64)
+        missing_byte = random.choice(list(missing_bytes))
+        for i in range(64):
+            if i % 16 == 0:  # Insert missing byte every 16 positions
+                buf[i] = missing_byte
+            else:
+                buf[i] = random.randint(0, 255)
+        buffers.append(bytes(buf))
+
+    # Add missing bytes at strategic positions in remaining buffers
+    for buf in buffers:
+        # Modify first byte if no missing bytes present
+        if not any(b in missing_bytes for b in buf):
+            new_buf = bytearray(buf)
+            new_buf[0] = random.choice(missing_bytes_list)
+            buffers[buffers.index(buf)] = bytes(new_buf)
 
     return buffers
 
@@ -130,17 +193,13 @@ def generate_puzzle_prompt_header():
     """
     visible_buffers = generate_visible_buffers()
 
-    prompt = """Below is a puzzle involving 20 input buffers and their transformed outputs.
+    prompt = """Below is a puzzle involving 24 input buffers and their transformed outputs.
 Each buffer is exactly 64 bytes, shown in hex.
 
 Your task: Figure out the logic of the transformation used to go from the INPUT to the OUTPUT.
 Then, provide a Python function that, given any new 64-byte buffer, will produce the correct transformed output.
 
-def transform(data: bytes) -> bytes:
-   # Transform logic
-   return bytes
-
-Here are the 20 input (SRC) buffers in hex (one line per buffer):
+Here are the 24 input (SRC) buffers in hex (one line per buffer): 20 
 """
 
     # Add each input buffer to the prompt
@@ -157,7 +216,14 @@ if __name__ == "__main__":
 
     # Generate and save buffers
     prompt_header, visible_buffers = generate_puzzle_prompt_header()
-    hidden_buffers = generate_hidden_buffers()
+    # Calculate missing bytes
+    missing_bytes = get_missing_bytes(visible_buffers)
+    print(f"Total unique bytes in visible inputs: {256 - len(missing_bytes)}")
+    print(f"Number of missing bytes in visible inputs: {len(missing_bytes)}")
+    print("Missing byte values on input buffers: ")
+    print([f"0x{x:02X}" for x in sorted(list(missing_bytes))])
+    # Generate hidden buffers with missing bytes information
+    hidden_buffers = generate_hidden_buffers(missing_bytes)
 
     # Save the prompt header for later use
     with open('shared/prompt_header.txt', 'w') as f:

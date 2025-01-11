@@ -43,7 +43,7 @@ from pathlib import Path
 
 def load_buffers(prefix):
     buffers = []
-    for i in range(1, 21):  # Load all 20 buffers
+    for i in range(1, 25):  # Load all 24 buffers
         with open(f"/buffers/shared/{prefix}_{i:02d}.bin", "rb") as f:
             buffers.append(f.read())
     return buffers
@@ -54,12 +54,12 @@ def load_expected_outputs(puzzle_dir, puzzle_num):
     
     # Load visible outputs
     with open(f"{puzzle_dir}/visible_outputs_{puzzle_num}.bin", "rb") as f:
-        for _ in range(20):  # 20 buffers
+        for _ in range(24):  # 24 buffers
             visible_outputs.append(f.read(64))
             
     # Load hidden outputs
     with open(f"{puzzle_dir}/hidden_outputs_{puzzle_num}.bin", "rb") as f:
-        for _ in range(20):  # 20 buffers
+        for _ in range(24):  # 24 buffers
             hidden_outputs.append(f.read(64))
             
     return visible_outputs, hidden_outputs
@@ -93,13 +93,13 @@ def run_tests():
             
             with open(os.path.join("/puzzle", f"visible_outputs_{puzzle_num}.bin"), "rb") as f:
                 visible_outputs = []
-                for _ in range(20):
+                for _ in range(24):
                     visible_outputs.append(f.read(64))
             print("Loaded visible outputs", flush=True)
                     
             with open(os.path.join("/puzzle", f"hidden_outputs_{puzzle_num}.bin"), "rb") as f:
                 hidden_outputs = []
-                for _ in range(20):
+                for _ in range(24):
                     hidden_outputs.append(f.read(64))
             print("Loaded hidden outputs", flush=True)
         except Exception as e:
@@ -139,9 +139,9 @@ def run_tests():
 
         result = {
             "success": True,
-            "visible_score": visible_correct / 20,
-            "hidden_score": hidden_correct / 20,
-            "total_score": (visible_correct + hidden_correct) / 40,
+            "visible_score": visible_correct / 24,
+            "hidden_score": hidden_correct / 24,
+            "total_score": (visible_correct + hidden_correct) / 48,
             "execution_time": execution_time,
             "visible_correct": visible_correct,
             "hidden_correct": hidden_correct
