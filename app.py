@@ -114,6 +114,16 @@ PUZZLE_METADATA = {
             'state': 'checksums, block feedback',
             'features': 'checksum-based transforms, complex multi-pass, block shuffling'
         }
+    },
+    8: {
+        'name': 'State Machines and Complex Dependencies',
+        'description': 'Multi-state transforms with data-dependent behavior',
+        'complexity': {
+            'window': 'full buffer with local windows',
+            'operations': '5-8 ops per byte',
+            'state': 'multiple running states, data-driven behavior',
+            'features': 'running checksums, multi-condition branching, cross-referencing states'
+        }
     }
 }
 
