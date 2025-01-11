@@ -1,4 +1,5 @@
 # app.py
+import hashlib
 import os
 from dotenv import load_dotenv
 
@@ -250,6 +251,9 @@ def submit_solution(puzzle_id):
     result = docker_sandbox.run_submission(puzzle_id, data['code'])
     print(f"Sandbox result: {result}")
 
+    # Get user identifier from IP
+    user_id = get_user_identifier(request)
+
     # Only store in database if submission was successful
     if result.get('success', False):
         with sqlite3.connect('puzzle_bench.db') as conn:
@@ -258,7 +262,7 @@ def submit_solution(puzzle_id):
                         (puzzle_id, user_name, total_score, visible_score, hidden_score,
                          execution_time, code_length, timestamp)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
-                      (puzzle_id, 'anonymous', result['total_score'],
+                      (puzzle_id, user_id, result['total_score'],  # Changed from 'anonymous' to user_id
                        result['visible_score'], result['hidden_score'],
                        result['execution_time'], len(data['code']),
                        datetime.utcnow()))
@@ -289,6 +293,11 @@ def get_leaderboard(puzzle_id):
     } for row in rows]
 
     return jsonify(leaderboard)
+
+def get_user_identifier(request):
+    ip = request.remote_addr
+    hash_id = hashlib.md5(ip.encode()).hexdigest()[:8]
+    return f"User_{hash_id}"
 
 if __name__ == '__main__':
     init_db()
