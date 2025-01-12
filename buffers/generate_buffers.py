@@ -199,7 +199,7 @@ Each buffer is exactly 64 bytes, shown in hex.
 Your task: Figure out the logic of the transformation used to go from the INPUT to the OUTPUT.
 Then, provide a Python function that, given any new 64-byte buffer, will produce the correct transformed output.
 
-Here are the 24 input (SRC) buffers in hex (one line per buffer): 20 
+Here are the 24 input (SRC) buffers in hex (one line per buffer):
 """
 
     # Add each input buffer to the prompt

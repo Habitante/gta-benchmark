@@ -1,7 +1,7 @@
 # **Project: GTA-Benchmark (Guess the Transform Algorithm Benchmark)**
 
 ## **Overview**
-GTA-Benchmark (Guess the Transform Algorithm Benchmark) is a web-based benchmarking tool designed to test the algorithmic reasoning capabilities of AI models and humans. Each puzzle challenges participants to reverse-engineer a hidden byte transformation algorithm by examining input-output pairs. The system provides a set of 20 visible test cases for analysis and 20 hidden test cases for validation, with all buffers being exactly 64 bytes.
+GTA-Benchmark (Guess the Transform Algorithm Benchmark) is a web-based benchmarking tool designed to test the algorithmic reasoning capabilities of AI models and humans. Each puzzle challenges participants to reverse-engineer a hidden byte transformation algorithm by examining input-output pairs. The system provides a set of 24 visible test cases for analysis and 24 hidden test cases for validation, with all buffers being exactly 64 bytes.
 
 Participants are provided with a set of shared input buffers and the corresponding transformed outputs. Their goal is to guess the transformation logic by submitting Python code that replicates the hidden algorithm. Scores are awarded based on accuracy, execution time, and solution size, with features like leaderboards, multiple difficulty levels, and automated scoring.
 
@@ -21,8 +21,8 @@ This benchmark is not only for AI systems but also for human enthusiasts and dev
 ## Key Features
 
 1. **Standardized Testing Format**
-   - 20 visible test cases for analysis
-   - 20 hidden test cases for validation
+   - 24 visible test cases for analysis
+   - 24 hidden test cases for validation
    - All buffers exactly 64 bytes
    - Instant feedback on both visible and hidden tests
 
@@ -95,8 +95,8 @@ GTA-Benchmark/
 +-- buffers/
 ¦   +-- generate_buffers.py # Buffer generation script
 ¦   +-- shared/             # Standardized test buffers
-¦       +-- visible_*.bin   # 20 visible test buffers
-¦       +-- hidden_*.bin    # 20 hidden test buffers
+¦       +-- visible_*.bin   # 24 visible test buffers
+¦       +-- hidden_*.bin    # 24 hidden test buffers
 ¦       +-- prompt_header.txt  # Standard puzzle prompt header
 |
 +-- puzzles/
@@ -155,7 +155,7 @@ The benchmark provides a carefully designed progression of puzzle difficulties:
 
 Each puzzle includes carefully crafted test buffers to help understand the transformation:
 
-### Visible Test Buffers (20 total)
+### Visible Test Buffers (24 total)
 1. Basic patterns (zeros, ones)
 2. Single byte variations
 3. Sequential patterns
@@ -165,7 +165,7 @@ Each puzzle includes carefully crafted test buffers to help understand the trans
 7. ASCII text
 8. Controlled random data
 
-### Hidden Test Buffers (20 total)
+### Hidden Test Buffers (24 total)
 - More complex patterns
 - Different sequences
 - Various encodings
@@ -222,13 +222,12 @@ The leaderboard tracks:
 ## **Development Status**
 
 ### **Phase 1: Completed**
-- Generated standardized test buffers (20 visible + 20 hidden)
+- Generated standardized test buffers (24 visible + 24 hidden)
 - Implemented first two difficulty levels
 - Built Flask server with puzzle selection and submission
 - Integrated Docker sandbox for secure execution
 - Implemented leaderboard system
 
-### **Current Phase: Implementation**
 1. Completing Single-Byte Operations
    - Implementing remaining Level 1 puzzles (1-5)
    - Implementing remaining Level 2 puzzles (1-5)
@@ -245,10 +244,11 @@ The leaderboard tracks:
    - Improving puzzle selection page
    
 ### **Next Phase: Expansion**
-1. Deploy on DigitalOcean
-2. Add more complex transformations
-3. Implement user authentication
-4. Add competition features
+1. Add more complex transformations
+2. Implement user authentication
+3. Add competition features
+4. Improve Leaderboards
+5. Expose API for models
 
 ---
 
