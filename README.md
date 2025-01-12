@@ -7,17 +7,23 @@
 
 AI reasoning benchmark through reverse-engineering of byte transformations. Test your model's algorithmic thinking capabilities!
 
+![GTA Benchmark Concept](/docs/images/concept.png)
+
+"Here’s your input, here’s the output, guess how we got from one to the other. Write a 5-line Python function."
+
 ## Overview
-GTA-Benchmark challenges participants to reverse-engineer hidden transformation algorithms by examining input-output pairs. Each puzzle provides 20 visible test cases for analysis and 20 hidden test cases for validation.
+GTA-Benchmark challenges participants to reverse-engineer hidden transformation algorithms by examining input-output pairs. Each puzzle provides 24 visible test cases for analysis and 24 hidden test cases for validation.
 
 ![GTA Benchmark Interface](/docs/images/interface.png)
+
+![GTA Benchmark Interface](/docs/images/example.png)
+
+Paste your function, hit [Submit], and get instant feedback.
 
 ## Live Demo
 A running instance of GTA-Benchmark is available at http://138.197.66.242:5000/
 
 ⚠️ Note: This is a development instance for demonstration purposes.
-
-![GTA Benchmark Interface](/docs/images/example.png)
 
 ## Prerequisites
 - Python 3.9 or higher
